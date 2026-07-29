@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Saree Khazana — Guledgudda Khana &amp; Ilkal Since 1952</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink: #2C0912;
+    --maroon: #4A0E1F;
+    --maroon-deep: #350A17;
+    --teal: #0F3733;
+    --teal-deep: #0A2724;
+    --gold: #C09A45;
+    --gold-soft: #D9BC7B;
+    --ivory: #F4EDE0;
+    --ivory-dim: #EAE0CC;
+    --marigold: #D9722C;
+    --blush: #E9D9C8;
+    --line: rgba(192,154,69,0.35);
+    --shadow: 0 20px 50px rgba(44,9,18,0.25);
+    --ease: cubic-bezier(.22,.61,.36,1);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Jost', sans-serif;
+    background:var(--ivory);
+    color:var(--ink);
+    overflow-x:hidden;
+    font-weight:300;
+  }
+  h1,h2,h3,.display{
+    font-family:'Marcellus', serif;
+    font-weight:400;
+    letter-spacing:0.01em;
+  }
+  a{color:inherit; text-decoration:none;}
+  img{max-width:100%; display:block;}
+  button{font-family:inherit; cursor:pointer;}
+  .eyebrow{
+    font-size:0.72rem;
+    letter-spacing:0.32em;
+    text-transform:uppercase;
+    color:var(--gold);
+    font-weight:500;
+  }
+  :focus-visible{outline:2px solid var(--marigold); outline-offset:3px;}
+  ::selection{background:var(--gold-soft); color:var(--ink);}
+
+  /* ===== Zari border — signature woven motif ===== */
+  .zari-border{
+    height:30px;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='30' viewBox='0 0 40 30'%3E%3Cpath d='M20 5c6 0 9 4.5 9 9.5S26 24 20 24c-3.3 0-5.5-2.1-5.5-5.2 0-2.1 1.3-3.4 3.2-3.4 1.2 0 2.1.9 2.1 2' stroke='%23C09A45' stroke-width='1.3' fill='none' stroke-linecap='round'/%3E%3Ccircle cx='4' cy='15' r='1.7' fill='%23C09A45'/%3E%3Ccircle cx='36' cy='15' r='1.7' fill='%23C09A45'/%3E%3C/svg%3E");
+    background-repeat:repeat-x;
+    background-position:center;
+    background-color:var(--maroon-deep);
+  }
+  .zari-border.on-ivory{background-color:var(--ivory-dim);}
+
+  /* ===== Nav ===== */
+  header{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:22px clamp(20px,5vw,60px);
+    transition:background .4s var(--ease), padding .4s var(--ease), box-shadow .4s var(--ease);
+  }
+  header.scrolled{
+    background:rgba(244,237,224,0.92);
+    backdrop-filter:blur(10px);
+    padding:14px clamp(20px,5vw,60px);
+    box-shadow:0 2px 20px rgba(44,9,18,0.08);
+  }
+  .brand{display:flex; flex-direction:column; line-height:1; gap:4px;}
+  .brand .mark{font-family:'Marcellus',serif; font-size:1.5rem; letter-spacing:0.03em; color:var(--ink);}
+  header:not(.scrolled) .brand .mark{color:var(--ivory);}
+  .brand .sub{font-size:0.6rem; letter-spacing:0.28em; text-transform:uppercase; color:var(--gold);}
+  nav.links{display:flex; gap:38px; font-size:0.85rem; letter-spacing:0.03em;}
+  nav.links a{position:relative; padding:4px 0; color:var(--ink);}
+  header:not(.scrolled) nav.links a{color:var(--blush);}
+  nav.links a::after{
+    content:''; position:absolute; left:0; bottom:0; height:1px; width:0;
+    background:var(--marigold); transition:width .3s var(--ease);
+  }
+  nav.links a:hover::after{width:100%;}
+  .nav-actions{display:flex; align-items:center; gap:18px;}
+  .icon-btn{
+    background:none; border:none; position:relative; color:var(--ink);
+    display:flex; align-items:center; justify-content:center; width:38px; height:38px;
+  }
+  header:not(.scrolled) .icon-btn{color:var(--ivory);}
+  .icon-btn svg{width:20px; height:20px;}
+  .badge{
+    position:absolute; top:-2px; right:-2px; background:var(--marigold); color:#fff;
+    font-size:0.62rem; width:17px; height:17px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; font-weight:600;
+  }
+  .menu-toggle{display:none; background:none; border:none; color:var(--ivory); width:32px; height:32px;}
+  header.scrolled .menu-toggle{color:var(--ink);}
+
+  /* ===== Hero ===== */
+  .hero{
+    position:relative; min-height:100vh; display:flex; align-items:center;
+    background:
+      radial-gradient(ellipse at 80% 20%, rgba(192,154,69,0.18), transparent 55%),
+      linear-gradient(160deg, var(--maroon) 0%, var(--maroon-deep) 55%, var(--teal-deep) 130%);
+    overflow:hidden;
+    padding:120px clamp(20px,6vw,80px) 80px;
+  }
+  .hero::before{
+    content:''; position:absolute; inset:0; opacity:0.05; pointer-events:none;
+    background-image:repeating-linear-gradient(45deg, #fff 0 1px, transparent 1px 14px),
+                      repeating-linear-gradient(-45deg, #fff 0 1px, transparent 1px 14px);
+  }
+  .hero-grid{
+    position:relative; z-index:2; display:grid; grid-template-columns:1.1fr 0.9fr; gap:40px;
+    max-width:1300px; margin:0 auto; width:100%; align-items:center;
+  }
+  .hero-copy .eyebrow{color:var(--gold-soft); margin-bottom:22px; display:inline-block;}
+  .hero-copy h1{
+    color:var(--ivory); font-size:clamp(2.6rem, 5.2vw, 4.6rem); line-height:1.05;
+    max-width:11ch;
+  }
+  .hero-copy h1 em{font-style:italic; color:var(--gold-soft);}
+  .hero-copy p{
+    color:var(--blush); font-size:1.05rem; line-height:1.7; max-width:44ch; margin:26px 0 38px; opacity:0.9;
+  }
+  .btn-row{display:flex; gap:18px; flex-wrap:wrap;}
+  .btn{
+    display:inline-flex; align-items:center; gap:10px; padding:15px 30px; font-size:0.85rem;
+    letter-spacing:0.06em; text-transform:uppercase; border-radius:2px; transition:all .35s var(--ease);
+    border:1px solid transparent;
+  }
+  .btn-solid{background:var(--marigold); color:#fff;}
+  .btn-solid:hover{background:#c25f1e; transform:translateY(-2px); box-shadow:0 12px 24px rgba(217,114,44,0.35);}
+  .btn-outline{border-color:var(--gold-soft); color:var(--ivory);}
+  .btn-outline:hover{background:rgba(217,188,123,0.12); transform:translateY(-2px);}
+
+  /* thread-draw signature loom animation */
+  .loom{
+    position:relative; height:420px; display:flex; align-items:center; justify-content:center;
+  }
+  .loom svg{width:100%; height:100%; max-width:380px;}
+  .thread-line{
+    fill:none; stroke:var(--gold-soft); stroke-width:1.4;
+    stroke-dasharray:900; stroke-dashoffset:900;
+    animation:draw 3.2s var(--ease) forwards 0.4s;
+  }
+  .thread-line.delay{animation-delay:1s; stroke:var(--marigold); opacity:0.8;}
+  @keyframes draw{to{stroke-dashoffset:0;}}
+  .loom .dot{fill:var(--gold); opacity:0; animation:pop .5s var(--ease) forwards;}
+  @keyframes pop{to{opacity:1;}}
+
+  .scroll-cue{
+    position:absolute; bottom:28px; left:50%; transform:translateX(-50%);
+    color:var(--gold-soft); font-size:0.65rem; letter-spacing:0.3em; text-transform:uppercase;
+    display:flex; flex-direction:column; align-items:center; gap:10px; z-index:2;
+  }
+  .scroll-cue .line{width:1px; height:34px; background:linear-gradient(var(--gold-soft), transparent); animation:cue 2s infinite;}
+  @keyframes cue{0%{opacity:0.2;} 50%{opacity:1;} 100%{opacity:0.2;}}
+
+  /* ===== Marquee ===== */
+  .marquee{
+    background:var(--gold); overflow:hidden; white-space:nowrap; padding:14px 0;
+  }
+  .marquee-track{display:inline-flex; animation:scroll-left 26s linear infinite;}
+  .marquee span{
+    font-family:'Marcellus',serif; font-size:1.1rem; color:var(--maroon-deep); padding:0 30px;
+    display:inline-flex; align-items:center; gap:30px;
+  }
+  .marquee span::after{content:'✦'; font-size:0.8rem;}
+  @keyframes scroll-left{from{transform:translateX(0);} to{transform:translateX(-50%);}}
+
+  /* ===== Section shell ===== */
+  section{padding:110px clamp(20px,6vw,80px);}
+  .section-head{max-width:640px; margin:0 auto 60px; text-align:center;}
+  .section-head .eyebrow{margin-bottom:16px; display:block;}
+  .section-head h2{font-size:clamp(2rem,3.5vw,2.8rem);}
+  .section-head p{margin-top:16px; color:#6b5347; line-height:1.7;}
+  .reveal{opacity:0; transform:translateY(28px); transition:opacity .8s var(--ease), transform .8s var(--ease);}
+  .reveal.in-view{opacity:1; transform:translateY(0);}
+
+  /* ===== Collection ===== */
+  .collection{background:var(--ivory);}
+  .filters{
+    display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-bottom:50px;
+  }
+  .chip{
+    padding:10px 22px; border:1px solid rgba(74,14,31,0.25); border-radius:30px;
+    font-size:0.8rem; letter-spacing:0.04em; background:transparent; color:var(--ink);
+    transition:all .3s var(--ease);
+  }
+  .chip:hover{border-color:var(--marigold);}
+  .chip.active{background:var(--maroon); border-color:var(--maroon); color:var(--ivory);}
+
+  .grid{
+    display:grid; grid-template-columns:repeat(4, 1fr); gap:28px; max-width:1300px; margin:0 auto;
+  }
+  .card{
+    background:#fff; border-radius:4px; overflow:hidden; box-shadow:var(--shadow);
+    display:flex; flex-direction:column; transition:transform .45s var(--ease), box-shadow .45s var(--ease);
+    opacity:0; transform:translateY(20px);
+  }
+  .card.show{animation:cardIn .6s var(--ease) forwards;}
+  @keyframes cardIn{to{opacity:1; transform:translateY(0);}}
+  .card:hover{transform:translateY(-8px); box-shadow:0 30px 60px rgba(44,9,18,0.22);}
+  .swatch{
+    position:relative; height:300px; overflow:hidden;
+  }
+  .swatch .product-photo{
+    position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+    transition:transform .6s var(--ease);
+  }
+  .card:hover .product-photo{transform:scale(1.07);}
+  .swatch .fabric{
+    position:absolute; inset:0;
+    background-image:
+      repeating-linear-gradient(115deg, rgba(255,255,255,0.08) 0 2px, transparent 2px 6px),
+      var(--g);
+    transition:transform .6s var(--ease);
+  }
+  .card:hover .swatch .fabric{transform:scale(1.07) rotate(0.5deg);}
+  .swatch .pallu{
+    position:absolute; left:0; right:0; bottom:0; height:22px;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='22' viewBox='0 0 30 22'%3E%3Cpath d='M15 3c4.5 0 7 3.3 7 7s-2.5 7-7 7c-2.4 0-4-1.6-4-3.8 0-1.6 1-2.6 2.4-2.6 0.9 0 1.6.7 1.6 1.5' stroke='%23F4EDE0' stroke-width='1.1' fill='none' stroke-linecap='round' opacity='0.85'/%3E%3C/svg%3E");
+    background-repeat:repeat-x; background-position:center;
+    background-color:rgba(0,0,0,0.12);
+  }
+  .swatch .tag{
+    position:absolute; top:14px; left:14px; background:rgba(244,237,224,0.92); color:var(--maroon-deep);
+    font-size:0.62rem; letter-spacing:0.14em; text-transform:uppercase; padding:6px 12px; border-radius:20px;
+  }
+  .swatch .quick-add{
+    position:absolute; right:14px; bottom:34px; width:42px; height:42px; border-radius:50%;
+    background:var(--ivory); border:none; display:flex; align-items:center; justify-content:center;
+    transform:translateY(70px); opacity:0; transition:all .4s var(--ease); color:var(--maroon-deep);
+  }
+  .card:hover .quick-add{transform:translateY(0); opacity:1;}
+  .quick-add:hover{background:var(--marigold); color:#fff;}
+  .quick-add svg{width:18px; height:18px;}
+  .card-info{padding:20px 22px 24px; display:flex; flex-direction:column; gap:6px; flex:1;}
+  .card-info .cat{font-size:0.68rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--gold);}
+  .card-info h3{font-size:1.15rem; font-weight:400;}
+  .card-info .price{display:flex; align-items:baseline; gap:10px; margin-top:6px;}
+  .card-info .price .now{font-family:'Marcellus',serif; font-size:1.2rem; color:var(--maroon-deep);}
+  .card-info .price .was{font-size:0.85rem; color:#a89282; text-decoration:line-through;}
+
+  /* ===== The Weave (process) ===== */
+  .weave{background:linear-gradient(180deg, var(--teal-deep), var(--teal) 100%); color:var(--ivory);}
+  .weave .section-head h2, .weave .eyebrow{color:var(--ivory);}
+  .weave .eyebrow{color:var(--gold-soft);}
+  .weave .section-head p{color:var(--blush); opacity:0.8;}
+  .steps{
+    display:grid; grid-template-columns:repeat(5,1fr); gap:24px; max-width:1300px; margin:0 auto;
+    counter-reset:step;
+  }
+  .step{position:relative; padding-top:20px;}
+  .step::before{
+    counter-increment:step; content:counter(step, decimal-leading-zero);
+    font-family:'Marcellus',serif; font-size:2.4rem; color:var(--gold-soft); opacity:0.55;
+  }
+  .step h3{margin-top:14px; font-size:1.05rem; font-weight:400;}
+  .step p{margin-top:10px; font-size:0.88rem; line-height:1.6; color:var(--blush); opacity:0.75;}
+  .step:not(:last-child)::after{
+    content:''; position:absolute; top:26px; left:calc(100% + 12px); width:calc(100% - 24px);
+    height:1px; background:linear-gradient(90deg, var(--gold-soft), transparent);
+    display:none;
+  }
+  @media(min-width:900px){ .step:not(:last-child)::after{display:block;} }
+
+  /* ===== Testimonials ===== */
+  .testimonials{background:var(--ivory-dim); text-align:center;}
+  .quote-wrap{max-width:720px; margin:0 auto; min-height:220px; position:relative;}
+  .quote{
+    position:absolute; inset:0; opacity:0; transition:opacity .7s var(--ease);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+  }
+  .quote.active{opacity:1; position:relative;}
+  .quote p{font-family:'Marcellus',serif; font-size:1.5rem; line-height:1.6; color:var(--ink);}
+  .quote .who{margin-top:22px; font-size:0.8rem; letter-spacing:0.08em; color:var(--gold);}
+  .dots{display:flex; gap:10px; justify-content:center; margin-top:34px;}
+  .dots button{width:8px; height:8px; border-radius:50%; background:rgba(74,14,31,0.25); border:none; padding:0;}
+  .dots button.active{background:var(--marigold); width:22px; border-radius:5px; transition:all .3s var(--ease);}
+
+  /* ===== Newsletter ===== */
+  .newsletter{
+    background:linear-gradient(135deg, var(--maroon), var(--maroon-deep));
+    color:var(--ivory); text-align:center;
+  }
+  .newsletter h2{font-size:clamp(1.8rem,3vw,2.5rem); max-width:16ch; margin:0 auto;}
+  .newsletter p{color:var(--blush); opacity:0.85; margin:16px auto 34px; max-width:44ch;}
+  .n-form{display:flex; justify-content:center; gap:12px; max-width:440px; margin:0 auto; flex-wrap:wrap;}
+  .n-form input{
+    flex:1; min-width:220px; padding:15px 18px; border:1px solid var(--line); background:rgba(255,255,255,0.06);
+    color:var(--ivory); border-radius:2px; font-family:inherit; font-size:0.9rem;
+  }
+  .n-form input::placeholder{color:rgba(233,217,200,0.55);}
+  .n-form input:focus{outline:none; border-color:var(--gold-soft);}
+
+  /* ===== Footer ===== */
+  footer{background:var(--maroon-deep); color:var(--blush); padding:70px clamp(20px,6vw,80px) 30px;}
+  .foot-grid{
+    display:grid; grid-template-columns:1.4fr 1fr 1fr 1fr; gap:40px; max-width:1300px; margin:0 auto;
+    padding-bottom:50px; border-bottom:1px solid rgba(192,154,69,0.2);
+  }
+  .foot-grid .brand .mark{color:var(--ivory);}
+  .foot-grid p{margin-top:14px; font-size:0.85rem; line-height:1.7; opacity:0.75; max-width:32ch;}
+  .foot-grid h4{font-size:0.75rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold-soft); margin-bottom:16px;}
+  .foot-grid ul{list-style:none; display:flex; flex-direction:column; gap:10px;}
+  .foot-grid a{font-size:0.87rem; opacity:0.8; transition:opacity .25s;}
+  .foot-grid a:hover{opacity:1; color:var(--gold-soft);}
+  .foot-bottom{
+    max-width:1300px; margin:0 auto; padding-top:24px; display:flex; justify-content:space-between;
+    font-size:0.78rem; opacity:0.6; flex-wrap:wrap; gap:10px;
+  }
+
+  /* ===== Cart drawer ===== */
+  .overlay{
+    position:fixed; inset:0; background:rgba(44,9,18,0.45); z-index:200; opacity:0; pointer-events:none;
+    transition:opacity .4s var(--ease); backdrop-filter:blur(2px);
+  }
+  .overlay.open{opacity:1; pointer-events:auto;}
+  .drawer{
+    position:fixed; top:0; right:0; height:100%; width:min(420px,92vw); background:var(--ivory);
+    z-index:201; transform:translateX(100%); transition:transform .45s var(--ease);
+    display:flex; flex-direction:column; box-shadow:-20px 0 50px rgba(0,0,0,0.2);
+  }
+  .drawer.open{transform:translateX(0);}
+  .drawer-head{
+    display:flex; align-items:center; justify-content:space-between; padding:24px 26px;
+    border-bottom:1px solid rgba(74,14,31,0.12);
+  }
+  .drawer-head h3{font-size:1.25rem;}
+  .drawer-close{background:none; border:none; width:34px; height:34px; color:var(--ink);}
+  .drawer-items{flex:1; overflow-y:auto; padding:10px 26px;}
+  .cart-line{
+    display:flex; gap:14px; padding:18px 0; border-bottom:1px solid rgba(74,14,31,0.08); align-items:center;
+  }
+  .cart-swatch{width:64px; height:80px; border-radius:3px; flex-shrink:0; background-image:repeating-linear-gradient(115deg, rgba(255,255,255,0.08) 0 2px, transparent 2px 6px), var(--g);}
+  .cart-detail{flex:1;}
+  .cart-detail h4{font-size:0.95rem; font-weight:400;}
+  .cart-detail .cat{font-size:0.68rem; color:var(--gold); letter-spacing:0.1em; text-transform:uppercase; margin:4px 0 8px;}
+  .qty{display:flex; align-items:center; gap:10px;}
+  .qty button{width:24px; height:24px; border:1px solid rgba(74,14,31,0.25); background:none; border-radius:50%; font-size:0.9rem; line-height:1;}
+  .qty span{font-size:0.85rem; min-width:14px; text-align:center;}
+  .remove-line{background:none; border:none; color:#a89282; font-size:0.75rem; text-decoration:underline; margin-top:8px;}
+  .cart-price{font-family:'Marcellus',serif; font-size:0.95rem; white-space:nowrap;}
+  .drawer-empty{padding:60px 10px; text-align:center; color:#a89282; font-size:0.9rem;}
+  .drawer-foot{padding:22px 26px 28px; border-top:1px solid rgba(74,14,31,0.12);}
+  .drawer-foot .total-row{display:flex; justify-content:space-between; margin-bottom:18px; font-size:1rem;}
+  .drawer-foot .total-row .amt{font-family:'Marcellus',serif; font-size:1.3rem;}
+  .drawer-foot .btn-solid{width:100%; justify-content:center;}
+
+  .call-note{
+    font-size:0.78rem; line-height:1.6; color:#8a6b5a; margin-bottom:16px;
+    background:rgba(217,114,44,0.08); border:1px solid rgba(217,114,44,0.2);
+    padding:10px 14px; border-radius:4px;
+  }
+
+  /* ===== Checkout modal ===== */
+  .modal{
+    position:fixed; top:50%; left:50%; transform:translate(-50%,-48%) scale(0.96); z-index:301;
+    width:min(480px, 92vw); max-height:88vh; overflow-y:auto; background:var(--ivory);
+    border-radius:6px; padding:38px 34px 30px; box-shadow:0 40px 80px rgba(44,9,18,0.35);
+    opacity:0; pointer-events:none; transition:opacity .4s var(--ease), transform .4s var(--ease);
+  }
+  .modal.open{opacity:1; pointer-events:auto; transform:translate(-50%,-50%) scale(1);}
+  .modal-close{position:absolute; top:18px; right:18px;}
+  .modal h3{font-size:1.5rem; margin-top:8px;}
+  .modal-sub{font-size:0.88rem; color:#6b5347; line-height:1.6; margin-top:10px;}
+  .modal-summary{
+    background:rgba(74,14,31,0.05); border-radius:4px; padding:14px 16px; margin:18px 0;
+    font-size:0.85rem; display:flex; justify-content:space-between; color:var(--ink);
+  }
+  .modal-summary .amt{font-family:'Marcellus',serif; color:var(--maroon-deep);}
+  #checkoutForm{display:flex; flex-direction:column; gap:14px; margin-top:6px;}
+  #checkoutForm label{display:flex; flex-direction:column; gap:6px; font-size:0.78rem; color:#6b5347; letter-spacing:0.02em;}
+  #checkoutForm input, #checkoutForm textarea{
+    font-family:inherit; font-size:0.9rem; padding:12px 14px; border:1px solid rgba(74,14,31,0.2);
+    border-radius:3px; background:#fff; color:var(--ink); resize:vertical; min-height:44px;
+  }
+  #checkoutForm textarea{min-height:64px;}
+  #checkoutForm input:focus, #checkoutForm textarea:focus{outline:none; border-color:var(--marigold);}
+  #checkoutForm .btn{margin-top:6px;}
+  .modal-alt{font-size:0.78rem; text-align:center; color:#8a6b5a; margin-top:6px;}
+  .modal-alt a{color:var(--marigold); font-weight:500;}
+  #modalSuccessView{text-align:center; padding:20px 0 4px;}
+  .success-icon{width:52px; height:52px; color:var(--marigold); margin-bottom:14px;}
+  .order-id{font-family:'Marcellus',serif; font-size:1rem; color:var(--maroon-deep); margin:16px 0 22px;}
+  .modal-done{width:100%; justify-content:center; color:var(--ink); border-color:rgba(74,14,31,0.3);}
+  .form-error{color:#a3283a; font-size:0.78rem; margin-top:-6px;}
+
+  /* Toast */
+  .toast{
+    position:fixed; bottom:30px; left:50%; transform:translateX(-50%) translateY(20px); z-index:300;
+    background:var(--ink); color:var(--ivory); padding:14px 26px; border-radius:30px; font-size:0.85rem;
+    display:flex; align-items:center; gap:10px; opacity:0; pointer-events:none; transition:all .4s var(--ease);
+  }
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+  .toast svg{width:16px; height:16px; color:var(--gold-soft);}
+
+  /* ===== Responsive ===== */
+  @media(max-width:1080px){
+    .grid{grid-template-columns:repeat(2,1fr);}
+    .steps{grid-template-columns:repeat(2,1fr);}
+    .hero-grid{grid-template-columns:1fr;}
+    .loom{height:280px; order:-1;}
+  }
+  @media(max-width:720px){
+    nav.links, .nav-actions .icon-btn:first-child{display:none;}
+    .menu-toggle{display:flex; align-items:center; justify-content:center;}
+    .grid{grid-template-columns:1fr;}
+    .foot-grid{grid-template-columns:1fr 1fr;}
+    section{padding:80px 20px;}
+  }
+  nav.mobile-links{
+    position:fixed; top:0; right:0; height:100%; width:78vw; max-width:320px; background:var(--maroon-deep);
+    z-index:150; transform:translateX(100%); transition:transform .4s var(--ease);
+    display:flex; flex-direction:column; gap:28px; padding:100px 34px; color:var(--ivory);
+  }
+  nav.mobile-links.open{transform:translateX(0);}
+  nav.mobile-links a{font-family:'Marcellus',serif; font-size:1.3rem;}
+
+  @media(prefers-reduced-motion: reduce){
+    *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; scroll-behavior:auto !important;}
+  }
+</style>
+</head>
+<body>
+
+<header id="siteHeader">
+  <div class="brand">
+    <span class="mark">Saree Khazana</span>
+    <span class="sub">Guledgudda Khana &amp; Ilkal</span>
+  </div>
+  <nav class="links">
+    <a href="#collection">Collection</a>
+    <a href="#weave">The Weave</a>
+    <a href="#stories">Stories</a>
+    <a href="#contact">Visit</a>
+  </nav>
+  <div class="nav-actions">
+    <button class="icon-btn" aria-label="Search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+    </button>
+    <button class="icon-btn" id="cartBtn" aria-label="Open bag">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 8h12l-1.2 11.2a2 2 0 0 1-2 1.8H9.2a2 2 0 0 1-2-1.8L6 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+      <span class="badge" id="cartCount">0</span>
+    </button>
+    <button class="menu-toggle" id="menuToggle" aria-label="Open menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+  </div>
+</header>
+
+<nav class="mobile-links" id="mobileLinks">
+  <a href="#collection">Collection</a>
+  <a href="#weave">The Weave</a>
+  <a href="#stories">Stories</a>
+  <a href="#contact">Visit</a>
+</nav>
+<div class="overlay" id="mobileOverlay"></div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid">
+    <div class="hero-copy">
+      <span class="eyebrow">Since 1952 · Guledgudda</span>
+      <h1>Guledgudda's <em>own</em> saree store, now online</h1>
+      <p>Started by Takusha Pawar in 1952 in the small town of Guledgudda, our family has been weaving and selling Khana and Ilkal sarees for over seven decades — offline, from the same shop, for most of those years. Now, that same trust comes straight to your phone.</p>
+      <div class="btn-row">
+        <a href="#collection" class="btn btn-solid">Explore the Collection</a>
+        <a href="#weave" class="btn btn-outline">See how it's woven</a>
+      </div>
+    </div>
+    <div class="loom" aria-hidden="true">
+      <svg viewBox="0 0 380 420">
+        <path class="thread-line" d="M40 40 C 180 20, 340 90, 300 180 S 80 300, 140 380 S 340 400, 340 400" />
+        <path class="thread-line delay" d="M340 20 C 200 60, 60 140, 100 220 S 320 280, 260 360" />
+        <circle class="dot" cx="40" cy="40" r="4" style="animation-delay:.4s"/>
+        <circle class="dot" cx="340" cy="400" r="4" style="animation-delay:3.4s"/>
+        <circle class="dot" cx="340" cy="20" r="4" style="animation-delay:1s"/>
+        <circle class="dot" cx="260" cy="360" r="4" style="animation-delay:3.8s"/>
+      </svg>
+    </div>
+  </div>
+  <div class="scroll-cue"><span>Scroll</span><span class="line"></span></div>
+</section>
+
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track" id="marqueeTrack"></div>
+</div>
+
+<div class="zari-border"></div>
+
+<!-- COLLECTION -->
+<section class="collection" id="collection">
+  <div class="section-head reveal">
+    <span class="eyebrow">The Collection</span>
+    <h2>Pick your six yards</h2>
+    <p>Filter by weave — each saree is a real loom's work, not a print.</p>
+  </div>
+  <div class="filters" id="filters"></div>
+  <div class="grid" id="productGrid"></div>
+</section>
+
+<div class="zari-border on-ivory"></div>
+
+<!-- THE WEAVE -->
+<section class="weave" id="weave">
+  <div class="section-head reveal">
+    <span class="eyebrow">Behind the Border</span>
+    <h2>The Weave</h2>
+    <p>From raw thread to a saree that could be worn for a hundred weddings — five stages, one loom.</p>
+  </div>
+  <div class="steps" id="stepsGrid"></div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials" id="stories">
+  <div class="section-head reveal">
+    <span class="eyebrow">Stories</span>
+    <h2>Worn, not just bought</h2>
+  </div>
+  <div class="quote-wrap" id="quoteWrap"></div>
+  <div class="dots" id="dots"></div>
+</section>
+
+<div class="zari-border"></div>
+
+<!-- NEWSLETTER -->
+<section class="newsletter" id="contact">
+  <h2>Saree details &amp; new arrivals</h2>
+  <p>Want details on a saree — fabric, size, or availability? Call us directly, or leave your email for new arrivals and restocks.</p>
+  <div class="btn-row" style="justify-content:center; margin-bottom:26px;">
+    <a href="tel:+919916317235" class="btn btn-outline">Call Us: +91 99163 17235</a>
+  </div>
+  <form class="n-form" id="newsForm">
+    <input type="email" placeholder="you@email.com" required aria-label="Email address">
+    <button type="submit" class="btn btn-solid">Subscribe</button>
+  </form>
+</section>
+
+<footer>
+  <div class="foot-grid">
+    <div>
+      <div class="brand"><span class="mark">Saree Khazana</span></div>
+      <p>Started by Takusha Pawar in 1952 in Guledgudda, home of the Khana and Ilkal weave — decades of offline trade, now finally online.</p>
+      <p style="margin-top:14px; font-size:0.85rem; line-height:1.7; opacity:0.85;">
+        Kirankumar Pawar<br>
+        Guledgudda, Bagalkot, Karnataka – 587203<br>
+        <a href="tel:+919916317235">+91 99163 17235</a>
+      </p>
+    </div>
+    <div>
+      <h4>Shop</h4>
+      <ul>
+        <li><a href="#collection">Ilkal Silk</a></li>
+        <li><a href="#collection">Khana</a></li>
+        <li><a href="#collection">Handloom Cotton</a></li>
+        <li><a href="#collection">Bridal Edit</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Studio</h4>
+      <ul>
+        <li><a href="#weave">The Weave</a></li>
+        <li><a href="#stories">Customer Stories</a></li>
+        <li><a href="#">Care Guide</a></li>
+        <li><a href="#">Our Weavers</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Support</h4>
+      <ul>
+        <li><a href="#">Shipping</a></li>
+        <li><a href="#">Returns</a></li>
+        <li><a href="#">Size &amp; Drape Guide</a></li>
+        <li><a href="#">Contact Us</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <span>© 2026 Saree Khazana.</span>
+    <span>Guledgudda Khana &amp; Ilkal, since 1952.</span>
+  </div>
+</footer>
+
+<!-- CART DRAWER -->
+<div class="overlay" id="cartOverlay"></div>
+<aside class="drawer" id="cartDrawer" aria-label="Shopping bag">
+  <div class="drawer-head">
+    <h3>Your Bag</h3>
+    <button class="drawer-close" id="drawerClose" aria-label="Close bag">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </div>
+  <div class="drawer-items" id="drawerItems"></div>
+  <div class="drawer-foot" id="drawerFoot">
+    <div class="total-row"><span>Total</span><span class="amt" id="cartTotal">₹0</span></div>
+    <p class="call-note">We don't take payment online. Confirm your order below and our team will call you to finalise it — pay by cash or UPI when we call.</p>
+    <button class="btn btn-solid" id="checkoutBtn">Request a Callback</button>
+  </div>
+</aside>
+
+<!-- CHECKOUT MODAL -->
+<div class="overlay" id="checkoutOverlay"></div>
+<div class="modal" id="checkoutModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <button class="drawer-close modal-close" id="modalClose" aria-label="Close">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 6l12 12M18 6L6 18"/></svg>
+  </button>
+
+  <div id="modalFormView">
+    <span class="eyebrow">Request a Callback</span>
+    <h3 id="modalTitle">Almost there</h3>
+    <p class="modal-sub">Leave your details and order summary below — no payment needed now. We call within a few hours to confirm and arrange payment.</p>
+    <div class="modal-summary" id="modalSummary"></div>
+    <form id="checkoutForm">
+      <label>Full name<input type="text" name="name" required placeholder="Your name"></label>
+      <label>Phone number<input type="tel" name="phone" required placeholder="10-digit mobile number" pattern="[0-9+\-\s]{7,15}"></label>
+      <label>Delivery address<textarea name="address" required placeholder="House / street / landmark"></textarea></label>
+      <label>City<input type="text" name="city" required placeholder="City"></label>
+      <label>Note (optional)<input type="text" name="note" placeholder="Preferred call time, blouse size, etc."></label>
+      <button type="submit" class="btn btn-solid" id="submitOrderBtn">Confirm Order Request</button>
+      <p class="modal-alt">Prefer to talk now? Call us at <a href="tel:+919916317235">+91 99163 17235</a></p>
+    </form>
+  </div>
+
+  <div id="modalSuccessView" style="display:none;">
+    <svg class="success-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg>
+    <h3>Request received</h3>
+    <p class="modal-sub" id="successMsg">Our team will call you shortly to confirm your order.</p>
+    <p class="order-id" id="successOrderId"></p>
+    <button class="btn btn-outline modal-done" id="modalDoneBtn">Done</button>
+  </div>
+</div>
+
+<div class="toast" id="toast">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+  <span id="toastMsg">Added to bag</span>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- Data ---------- */
+  const API_BASE = ""; // same-origin when served by the backend (npm start)
+  let products = []; // loaded from the backend — managed from admin.html
+
+  const steps = [
+    { title:"Dyeing", text:"Raw silk skeins are hand-dipped in natural and reactive dyes, batch by batch, so no two lots match exactly." },
+    { title:"Warping", text:"Thousands of warp threads are stretched and aligned on the loom frame — the saree's length, decided by hand." },
+    { title:"Weaving", text:"The weaver throws the shuttle, thread by thread, for up to three weeks on a single elaborate saree." },
+    { title:"Zari Work", text:"Real gold and silver-coated thread is woven into the border and pallu, motif by motif." },
+    { title:"Finishing", text:"Edges are hand-checked, starched lightly, and folded the traditional way before it ever reaches you." }
+  ];
+
+  const testimonials = [
+    { text:"I wore my grandmother's weaving technique — just from a different loom. The zari border alone was worth the wait.", who:"Ananya R., Chennai" },
+    { text:"Ordered a Banarasi for my sister's wedding. The colour in person was even richer than the photos.", who:"Priya M., Pune" },
+    { text:"You can feel the difference between this and a printed saree the moment you touch it.", who:"Lakshmi S., Hyderabad" }
+  ];
+
+  /* ---------- Cart state (in-memory) ---------- */
+  let cart = []; // {id, qty}
+
+  const fmt = n => "₹" + n.toLocaleString("en-IN");
+
+  /* ---------- Render: marquee ---------- */
+  const marqueeWords = ["Ilkal","Khana","Guledgudda","Handloom","Cotton Silk","Zari Border","Since 1952","Bridal"];
+  const marqueeHTML = marqueeWords.map(w => `<span>${w}</span>`).join("");
+  document.getElementById("marqueeTrack").innerHTML = marqueeHTML + marqueeHTML;
+
+  /* ---------- Render: filters ---------- */
+  const filtersEl = document.getElementById("filters");
+  let activeCat = "All";
+  function renderFilters(){
+    const categories = ["All", ...new Set(products.map(p => p.cat))];
+    filtersEl.innerHTML = "";
+    categories.forEach((c,i) => {
+      const b = document.createElement("button");
+      b.className = "chip" + (c === activeCat ? " active" : "");
+      b.textContent = c;
+      b.addEventListener("click", () => {
+        activeCat = c;
+        [...filtersEl.children].forEach(ch => ch.classList.remove("active"));
+        b.classList.add("active");
+        renderProducts();
+      });
+      filtersEl.appendChild(b);
+    });
+  }
+
+  /* ---------- Load products from backend ---------- */
+  async function loadProducts(){
+    gridEl.innerHTML = `<p style="grid-column:1/-1; text-align:center; color:#a89282;">Loading the collection…</p>`;
+    try{
+      const res = await fetch(`${API_BASE}/api/products`);
+      const data = await res.json();
+      products = data.products || [];
+    }catch(err){
+      products = [];
+    }
+    if(activeCat !== "All" && !products.some(p => p.cat === activeCat)) activeCat = "All";
+    renderFilters();
+    renderProducts();
+  }
+
+  /* ---------- Render: product grid ---------- */
+  const gridEl = document.getElementById("productGrid");
+  function renderProducts(){
+    const list = activeCat === "All" ? products : products.filter(p => p.cat === activeCat);
+    if(list.length === 0){
+      gridEl.innerHTML = `<p style="grid-column:1/-1; text-align:center; color:#a89282;">No sarees here yet — check back soon.</p>`;
+      return;
+    }
+    gridEl.innerHTML = list.map(p => {
+      const outOfStock = typeof p.stock === "number" && p.stock <= 0;
+      const lowStock = typeof p.stock === "number" && p.stock > 0 && p.stock <= 2;
+      return `
+      <div class="card show" data-id="${p.id}">
+        <div class="swatch">
+          ${p.image ? `<img class="product-photo" src="${p.image}" alt="${p.name}" loading="lazy">` : `<div class="fabric" style="--g:${p.gradient || 'linear-gradient(160deg,#7A1830,#4A0E1F 70%)'}"></div>`}
+          <div class="pallu"></div>
+          <span class="tag">${p.cat}</span>
+          ${outOfStock ? `<span class="tag" style="left:auto; right:14px; background:rgba(74,14,31,0.9); color:#F4EDE0;">Out of Stock</span>` : ""}
+          <button class="quick-add" data-add="${p.id}" aria-label="Add ${p.name} to bag" ${outOfStock ? "disabled style=\"opacity:0.4; cursor:not-allowed;\"" : ""}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12h14"/></svg>
+          </button>
+        </div>
+        <div class="card-info">
+          <span class="cat">${p.cat}</span>
+          <h3>${p.name}</h3>
+          <div class="price">
+            <span class="now">${fmt(p.price)}</span>
+            ${p.was ? `<span class="was">${fmt(p.was)}</span>` : ""}
+          </div>
+          ${lowStock ? `<span style="font-size:0.72rem; color:var(--marigold);">Only ${p.stock} left</span>` : ""}
+        </div>
+      </div>
+    `;
+    }).join("");
+    gridEl.querySelectorAll("[data-add]:not([disabled])").forEach(btn => {
+      btn.addEventListener("click", () => addToCart(parseInt(btn.dataset.add,10)));
+    });
+  }
+  loadProducts();
+  document.getElementById("stepsGrid").innerHTML = steps.map(s => `
+    <div class="step reveal">
+      <h3>${s.title}</h3>
+      <p>${s.text}</p>
+    </div>
+  `).join("");
+
+  /* ---------- Render: testimonials ---------- */
+  const quoteWrap = document.getElementById("quoteWrap");
+  const dotsWrap = document.getElementById("dots");
+  quoteWrap.innerHTML = testimonials.map((t,i) => `
+    <div class="quote ${i===0 ? "active":""}" data-i="${i}">
+      <p>"${t.text}"</p>
+      <span class="who">${t.who}</span>
+    </div>
+  `).join("");
+  dotsWrap.innerHTML = testimonials.map((t,i) => `<button class="${i===0?"active":""}" data-i="${i}" aria-label="Story ${i+1}"></button>`).join("");
+
+  let quoteIndex = 0;
+  function showQuote(i){
+    quoteIndex = i;
+    quoteWrap.querySelectorAll(".quote").forEach(q => q.classList.toggle("active", +q.dataset.i === i));
+    dotsWrap.querySelectorAll("button").forEach(d => d.classList.toggle("active", +d.dataset.i === i));
+  }
+  dotsWrap.querySelectorAll("button").forEach(d => d.addEventListener("click", () => showQuote(+d.dataset.i)));
+  let quoteTimer = setInterval(() => showQuote((quoteIndex+1) % testimonials.length), 5000);
+  quoteWrap.addEventListener("mouseenter", () => clearInterval(quoteTimer));
+  quoteWrap.addEventListener("mouseleave", () => { quoteTimer = setInterval(() => showQuote((quoteIndex+1) % testimonials.length), 5000); });
+
+  /* ---------- Cart logic ---------- */
+  const cartCountEl = document.getElementById("cartCount");
+  const drawerItemsEl = document.getElementById("drawerItems");
+  const cartTotalEl = document.getElementById("cartTotal");
+  const drawerFootEl = document.getElementById("drawerFoot");
+
+  function addToCart(id){
+    const p = products.find(p => p.id === id);
+    const line = cart.find(c => c.id === id);
+    const currentQty = line ? line.qty : 0;
+    if(typeof p.stock === "number" && currentQty + 1 > p.stock){
+      showToast(`Only ${p.stock} of ${p.name} left`);
+      return;
+    }
+    if(line) line.qty++;
+    else cart.push({id, qty:1});
+    renderCart();
+    showToast(`${p.name} added to bag`);
+    openDrawer();
+  }
+
+  function changeQty(id, delta){
+    const line = cart.find(c => c.id === id);
+    if(!line) return;
+    const p = products.find(pr => pr.id === id);
+    if(delta > 0 && typeof p.stock === "number" && line.qty + delta > p.stock){
+      showToast(`Only ${p.stock} of ${p.name} left`);
+      return;
+    }
+    line.qty += delta;
+    if(line.qty <= 0) cart = cart.filter(c => c.id !== id);
+    renderCart();
+  }
+
+  function removeLine(id){
+    cart = cart.filter(c => c.id !== id);
+    renderCart();
+  }
+
+  function renderCart(){
+    const totalItems = cart.reduce((s,c) => s + c.qty, 0);
+    cartCountEl.textContent = totalItems;
+
+    if(cart.length === 0){
+      drawerItemsEl.innerHTML = `<div class="drawer-empty">Your bag is empty — the loom awaits.</div>`;
+      drawerFootEl.style.display = "none";
+      return;
+    }
+    drawerFootEl.style.display = "block";
+
+    let total = 0;
+    drawerItemsEl.innerHTML = cart.map(c => {
+      const p = products.find(pr => pr.id === c.id);
+      total += p.price * c.qty;
+      return `
+        <div class="cart-line">
+          <div class="cart-swatch" style="${p.image ? `background-image:url('${p.image}'); background-size:cover; background-position:center;` : `--g:${p.gradient || 'linear-gradient(160deg,#7A1830,#4A0E1F 70%)'}`}"></div>
+          <div class="cart-detail">
+            <h4>${p.name}</h4>
+            <div class="cat">${p.cat}</div>
+            <div class="qty">
+              <button data-dec="${p.id}" aria-label="Decrease quantity">−</button>
+              <span>${c.qty}</span>
+              <button data-inc="${p.id}" aria-label="Increase quantity">+</button>
+            </div>
+            <button class="remove-line" data-remove="${p.id}">Remove</button>
+          </div>
+          <div class="cart-price">${fmt(p.price * c.qty)}</div>
+        </div>
+      `;
+    }).join("");
+    cartTotalEl.textContent = fmt(total);
+
+    drawerItemsEl.querySelectorAll("[data-inc]").forEach(b => b.addEventListener("click", () => changeQty(+b.dataset.inc, 1)));
+    drawerItemsEl.querySelectorAll("[data-dec]").forEach(b => b.addEventListener("click", () => changeQty(+b.dataset.dec, -1)));
+    drawerItemsEl.querySelectorAll("[data-remove]").forEach(b => b.addEventListener("click", () => removeLine(+b.dataset.remove)));
+  }
+  renderCart();
+
+  /* ---------- Drawer open/close ---------- */
+  const cartDrawer = document.getElementById("cartDrawer");
+  const cartOverlay = document.getElementById("cartOverlay");
+  function openDrawer(){ cartDrawer.classList.add("open"); cartOverlay.classList.add("open"); }
+  function closeDrawer(){ cartDrawer.classList.remove("open"); cartOverlay.classList.remove("open"); }
+  document.getElementById("cartBtn").addEventListener("click", openDrawer);
+  document.getElementById("drawerClose").addEventListener("click", closeDrawer);
+  cartOverlay.addEventListener("click", () => { closeDrawer(); closeMobile(); });
+  /* ---------- Checkout modal (call-only order request) ---------- */
+  const checkoutOverlay = document.getElementById("checkoutOverlay");
+  const checkoutModal = document.getElementById("checkoutModal");
+  const modalFormView = document.getElementById("modalFormView");
+  const modalSuccessView = document.getElementById("modalSuccessView");
+  const checkoutForm = document.getElementById("checkoutForm");
+  const modalSummary = document.getElementById("modalSummary");
+  const submitOrderBtn = document.getElementById("submitOrderBtn");
+
+  function openCheckout(){
+    if(cart.length === 0){ showToast("Your bag is empty"); return; }
+    const totalItems = cart.reduce((s,c) => s + c.qty, 0);
+    const total = cart.reduce((s,c) => s + products.find(p => p.id === c.id).price * c.qty, 0);
+    modalSummary.innerHTML = `<span>${totalItems} item${totalItems>1?"s":""} in bag</span><span class="amt">${fmt(total)}</span>`;
+    modalFormView.style.display = "block";
+    modalSuccessView.style.display = "none";
+    checkoutForm.reset();
+    closeDrawer();
+    checkoutOverlay.classList.add("open");
+    checkoutModal.classList.add("open");
+  }
+  function closeCheckout(){
+    checkoutOverlay.classList.remove("open");
+    checkoutModal.classList.remove("open");
+  }
+  document.getElementById("checkoutBtn").addEventListener("click", openCheckout);
+  document.getElementById("modalClose").addEventListener("click", closeCheckout);
+  document.getElementById("modalDoneBtn").addEventListener("click", closeCheckout);
+  checkoutOverlay.addEventListener("click", closeCheckout);
+
+  checkoutForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const fd = new FormData(checkoutForm);
+    const payload = {
+      name: fd.get("name").trim(),
+      phone: fd.get("phone").trim(),
+      address: fd.get("address").trim(),
+      city: fd.get("city").trim(),
+      note: fd.get("note").trim(),
+      items: cart.map(c => {
+        const p = products.find(pr => pr.id === c.id);
+        return { id: p.id, name: p.name, cat: p.cat, price: p.price, qty: c.qty };
+      }),
+      total: cart.reduce((s,c) => s + products.find(p => p.id === c.id).price * c.qty, 0)
+    };
+
+    submitOrderBtn.disabled = true;
+    submitOrderBtn.textContent = "Sending...";
+
+    try{
+      const res = await fetch(`${API_BASE}/api/orders`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if(!res.ok || !data.success) throw new Error(data.message || "Could not submit order");
+
+      document.getElementById("successMsg").textContent =
+        `Thanks, ${payload.name.split(" ")[0]}! We'll call ${payload.phone} shortly to confirm your order and arrange payment.`;
+      document.getElementById("successOrderId").textContent = `Order reference: ${data.orderId}`;
+      modalFormView.style.display = "none";
+      modalSuccessView.style.display = "block";
+
+      cart = [];
+      renderCart();
+    }catch(err){
+      showToast("Couldn't send your request — please call us at +91 99163 17235");
+    }finally{
+      submitOrderBtn.disabled = false;
+      submitOrderBtn.textContent = "Confirm Order Request";
+    }
+  });
+
+  /* ---------- Toast ---------- */
+  const toastEl = document.getElementById("toast");
+  const toastMsgEl = document.getElementById("toastMsg");
+  let toastTimer;
+  function showToast(msg){
+    toastMsgEl.textContent = msg;
+    toastEl.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toastEl.classList.remove("show"), 2600);
+  }
+
+  /* ---------- Newsletter ---------- */
+  document.getElementById("newsForm").addEventListener("submit", e => {
+    e.preventDefault();
+    showToast("You're on the list — welcome to the weave");
+    e.target.reset();
+  });
+
+  /* ---------- Mobile menu ---------- */
+  const mobileLinks = document.getElementById("mobileLinks");
+  const mobileOverlay = document.getElementById("mobileOverlay");
+  function openMobile(){ mobileLinks.classList.add("open"); mobileOverlay.classList.add("open"); }
+  function closeMobile(){ mobileLinks.classList.remove("open"); mobileOverlay.classList.remove("open"); }
+  document.getElementById("menuToggle").addEventListener("click", openMobile);
+  mobileOverlay.addEventListener("click", closeMobile);
+  mobileLinks.querySelectorAll("a").forEach(a => a.addEventListener("click", closeMobile));
+
+  /* ---------- Header scroll state ---------- */
+  const header = document.getElementById("siteHeader");
+  window.addEventListener("scroll", () => {
+    header.classList.toggle("scrolled", window.scrollY > 60);
+  });
+
+  /* ---------- Scroll reveal ---------- */
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add("in-view"); });
+  }, { threshold:0.15 });
+  document.querySelectorAll(".reveal").forEach(el => io.observe(el));
+
+})();
+</script>
+</body>
+</html>
