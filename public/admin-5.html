@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Saree Khazana — Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{ --maroon:#4A0E1F; --ivory:#F4EDE0; --gold:#C09A45; --ink:#2C0912; --marigold:#D9722C; }
+  *{box-sizing:border-box;}
+  body{font-family:'Jost',sans-serif; background:var(--ivory); color:var(--ink); margin:0; padding:40px 24px 80px;}
+  h1{font-family:'Marcellus',serif; font-weight:400; margin-bottom:4px;}
+  h2{font-family:'Marcellus',serif; font-weight:400; font-size:1.3rem; margin:0 0 16px;}
+  .sub{color:#8a6b5a; font-size:0.9rem; margin-bottom:30px;}
+  #gate{max-width:360px; margin:80px auto; text-align:center;}
+  #gate input{width:100%; padding:12px 14px; border:1px solid rgba(74,14,31,0.25); border-radius:4px; margin:14px 0; font-family:inherit;}
+  #gate button{width:100%; padding:12px; background:var(--maroon); color:#fff; border:none; border-radius:4px; font-family:inherit; cursor:pointer;}
+  table{width:100%; border-collapse:collapse; background:#fff; border-radius:6px; overflow:hidden; box-shadow:0 10px 30px rgba(44,9,18,0.08);}
+  th,td{text-align:left; padding:14px 16px; font-size:0.85rem; border-bottom:1px solid rgba(74,14,31,0.08); vertical-align:top;}
+  th{background:var(--maroon); color:var(--ivory); font-weight:400; letter-spacing:0.04em; text-transform:uppercase; font-size:0.72rem;}
+  tr:last-child td{border-bottom:none;}
+  .items{font-size:0.78rem; color:#6b5347;}
+  select,input,textarea{padding:8px 10px; border-radius:4px; border:1px solid rgba(74,14,31,0.25); font-family:inherit; font-size:0.85rem;}
+  .status-new{color:var(--marigold); font-weight:600;}
+  .empty{text-align:center; padding:60px; color:#8a6b5a;}
+  .amt{font-family:'Marcellus',serif;}
+  .stock-low{color:var(--marigold); font-weight:600;}
+  .stock-out{color:#a3283a; font-weight:600;}
+
+  .tabs{display:flex; gap:10px; margin-bottom:26px;}
+  .tab-btn{padding:10px 20px; border-radius:30px; border:1px solid rgba(74,14,31,0.25); background:#fff; cursor:pointer; font-family:inherit; font-size:0.85rem;}
+  .tab-btn.active{background:var(--maroon); color:var(--ivory); border-color:var(--maroon);}
+  .tab-panel{display:none;}
+  .tab-panel.active{display:block;}
+
+  .product-thumb{width:56px; height:70px; border-radius:3px; object-fit:cover; background:#eee2cf;}
+  .product-thumb.placeholder{display:flex; align-items:center; justify-content:center; font-size:0.6rem; color:#a89282; text-align:center;}
+
+  #productForm{
+    background:#fff; border-radius:8px; padding:22px; margin-bottom:26px;
+    box-shadow:0 10px 30px rgba(44,9,18,0.08);
+    display:grid; grid-template-columns:1fr 1fr; gap:14px;
+  }
+  #productForm label{display:flex; flex-direction:column; gap:5px; font-size:0.78rem; color:#6b5347;}
+  #productForm label.full{grid-column:1/-1;}
+  #productForm .form-actions{grid-column:1/-1; display:flex; gap:10px; align-items:center;}
+  #productForm button{padding:10px 20px; border-radius:4px; border:none; font-family:inherit; cursor:pointer;}
+  #productForm .save-btn{background:var(--maroon); color:#fff;}
+  #productForm .cancel-btn{background:none; border:1px solid rgba(74,14,31,0.25); color:var(--ink); display:none;}
+  #productFormMsg{font-size:0.8rem; color:#a3283a; grid-column:1/-1;}
+
+  .row-actions button{
+    background:none; border:none; cursor:pointer; font-size:0.78rem; text-decoration:underline; margin-right:10px; font-family:inherit;
+  }
+  .row-actions .edit-btn{color:var(--marigold);}
+  .row-actions .delete-btn{color:#a3283a;}
+
+  @media(max-width:640px){
+    #productForm{grid-template-columns:1fr;}
+    table, thead, tbody, th, td, tr{display:block;}
+    thead{display:none;}
+    tr{margin-bottom:14px; border:1px solid rgba(74,14,31,0.1); border-radius:6px; overflow:hidden;}
+    td{border-bottom:1px solid rgba(74,14,31,0.06);}
+    td::before{content:attr(data-label); display:block; font-size:0.65rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--gold); margin-bottom:4px;}
+  }
+</style>
+</head>
+<body>
+
+<div id="gate">
+  <h1>Saree Khazana</h1>
+  <p class="sub">Enter your admin key to manage orders and sarees.</p>
+  <input type="password" id="adminKeyInput" placeholder="Admin key">
+  <button id="unlockBtn">Sign in</button>
+</div>
+
+<div id="dashboard" style="display:none; max-width:1100px; margin:0 auto;">
+  <h1>Admin</h1>
+  <p class="sub">Manage order requests and your saree collection.</p>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="orders">Orders</button>
+    <button class="tab-btn" data-tab="products">Sarees &amp; Stock</button>
+    <button class="tab-btn" data-tab="settings">Site Info</button>
+  </div>
+
+  <!-- ORDERS TAB -->
+  <div class="tab-panel active" id="tab-orders">
+    <p class="sub" id="countSub"></p>
+    <table id="ordersTable">
+      <thead>
+        <tr><th>Order</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th></tr>
+      </thead>
+      <tbody id="ordersBody"></tbody>
+    </table>
+  </div>
+
+  <!-- PRODUCTS TAB -->
+  <div class="tab-panel" id="tab-products">
+    <h2 id="formTitle">Add a saree</h2>
+    <form id="productForm">
+      <input type="hidden" id="p-id">
+      <label>Saree name
+        <input type="text" id="p-name" required placeholder="e.g. Ilkal Cotton Silk — Maroon">
+      </label>
+      <label>Category
+        <input type="text" id="p-cat" required placeholder="e.g. Ilkal Silk">
+      </label>
+      <label>Price (₹)
+        <input type="number" id="p-price" required min="1" placeholder="4500">
+      </label>
+      <label>Old price (₹) — optional, for a discount
+        <input type="number" id="p-was" min="1" placeholder="Leave blank if none">
+      </label>
+      <label>Stock (how many you have)
+        <input type="number" id="p-stock" required min="0" step="1" placeholder="5">
+      </label>
+      <label class="full">Photo URL — paste a link to the saree photo (optional)
+        <input type="text" id="p-image" placeholder="https://...">
+      </label>
+      <p id="productFormMsg"></p>
+      <div class="form-actions">
+        <button type="submit" class="save-btn" id="saveBtn">Add saree</button>
+        <button type="button" class="cancel-btn" id="cancelEditBtn">Cancel edit</button>
+      </div>
+    </form>
+
+    <p class="sub" id="productCountSub"></p>
+    <table id="productsTable">
+      <thead>
+        <tr><th>Photo</th><th>Saree</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr>
+      </thead>
+      <tbody id="productsBody"></tbody>
+    </table>
+  </div>
+
+  <!-- SETTINGS TAB -->
+  <div class="tab-panel" id="tab-settings">
+    <h2>Site details</h2>
+    <p class="sub">These update the storefront everywhere they appear — brand name, story, and contact info.</p>
+    <form id="settingsForm">
+      <label>Brand / shop name
+        <input type="text" id="s-brandName" placeholder="Saree Khazana">
+      </label>
+      <label>Tagline (shown under the name)
+        <input type="text" id="s-tagline" placeholder="Guledgudda Khana &amp; Ilkal">
+      </label>
+      <label class="full">Homepage headline text (below "Since ...")
+        <textarea id="s-heroEyebrow" rows="1" placeholder="Since 1952 · Guledgudda"></textarea>
+      </label>
+      <label class="full">Homepage story paragraph
+        <textarea id="s-heroText" rows="4"></textarea>
+      </label>
+      <label class="full">Footer story paragraph
+        <textarea id="s-footerStory" rows="3"></textarea>
+      </label>
+      <label>Owner name
+        <input type="text" id="s-ownerName" placeholder="Kirankumar Pawar">
+      </label>
+      <label>Phone number
+        <input type="text" id="s-phone" placeholder="+91 99163 17235">
+      </label>
+      <label class="full">Address
+        <input type="text" id="s-address" placeholder="Guledgudda, Bagalkot, Karnataka – 587203">
+      </label>
+      <label>Footer copyright line
+        <input type="text" id="s-copyright" placeholder="© 2026 Saree Khazana.">
+      </label>
+      <label>Footer small tagline
+        <input type="text" id="s-footerTagline" placeholder="Guledgudda Khana &amp; Ilkal, since 1952.">
+      </label>
+      <p id="settingsFormMsg"></p>
+      <div class="form-actions">
+        <button type="submit" class="save-btn">Save changes</button>
+      </div>
+    </form>
+
+    <h2 style="margin-top:36px;">"The Weave" process steps</h2>
+    <p class="sub">These are the numbered steps on your homepage (Dyeing, Warping, etc.).</p>
+    <div id="stepsListEditor"></div>
+    <div class="form-actions" style="margin:14px 0 40px;">
+      <button type="button" id="addStepBtn" class="cancel-btn" style="display:inline-block;">+ Add step</button>
+      <button type="button" id="saveStepsBtn" class="save-btn">Save steps</button>
+    </div>
+    <p id="stepsMsg"></p>
+
+    <h2>Customer stories</h2>
+    <p class="sub">The rotating quotes shown on your homepage.</p>
+    <div id="testimonialsListEditor"></div>
+    <div class="form-actions" style="margin:14px 0 20px;">
+      <button type="button" id="addTestimonialBtn" class="cancel-btn" style="display:inline-block;">+ Add story</button>
+      <button type="button" id="saveTestimonialsBtn" class="save-btn">Save stories</button>
+    </div>
+    <p id="testimonialsMsg"></p>
+  </div>
+</div>
+
+<style>
+  .list-row{
+    background:#fff; border-radius:6px; padding:14px 16px; margin-bottom:12px;
+    display:flex; flex-direction:column; gap:8px; box-shadow:0 4px 14px rgba(44,9,18,0.06);
+  }
+  .list-row input, .list-row textarea{width:100%;}
+  .list-row .remove-row{
+    align-self:flex-end; background:none; border:none; color:#a3283a; font-size:0.78rem;
+    text-decoration:underline; cursor:pointer; font-family:inherit;
+  }
+</style>
+
+<script>
+  let adminKey = "";
+  let editingId = null;
+
+  document.getElementById("unlockBtn").addEventListener("click", signIn);
+  document.getElementById("adminKeyInput").addEventListener("keydown", e => { if(e.key === "Enter") signIn(); });
+
+  document.querySelectorAll(".tab-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+      document.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("active"));
+      btn.classList.add("active");
+      document.getElementById(`tab-${btn.dataset.tab}`).classList.add("active");
+    });
+  });
+
+  async function signIn(){
+    adminKey = document.getElementById("adminKeyInput").value.trim();
+    if(!adminKey){ alert("Enter your admin key"); return; }
+
+    const res = await fetch("/api/orders", { headers: { "x-admin-key": adminKey } });
+    if(res.status === 401){ alert("Wrong admin key"); return; }
+    const data = await res.json();
+
+    document.getElementById("gate").style.display = "none";
+    document.getElementById("dashboard").style.display = "block";
+    renderOrders(data.orders);
+    loadProducts();
+    loadSettings();
+  }
+
+  function fmt(n){ return "₹" + Number(n).toLocaleString("en-IN"); }
+
+  /* ---------- Orders ---------- */
+  function renderOrders(orders){
+    document.getElementById("countSub").textContent = `${orders.length} request${orders.length!==1?"s":""} total`;
+    const body = document.getElementById("ordersBody");
+
+    if(orders.length === 0){
+      body.innerHTML = `<tr><td colspan="5" class="empty">No order requests yet.</td></tr>`;
+      return;
+    }
+
+    body.innerHTML = orders.map(o => `
+      <tr>
+        <td data-label="Order">
+          <strong>${o.orderId}</strong><br>
+          <span class="items">${new Date(o.createdAt).toLocaleString("en-IN")}</span>
+        </td>
+        <td data-label="Customer">
+          ${o.name}<br>
+          <span class="items">${o.phone}<br>${o.address}, ${o.city}</span>
+          ${o.note ? `<br><span class="items">Note: ${o.note}</span>` : ""}
+        </td>
+        <td data-label="Items" class="items">
+          ${o.items.map(i => `${i.qty} × ${i.name}`).join("<br>")}
+        </td>
+        <td data-label="Total" class="amt">${fmt(o.total)}</td>
+        <td data-label="Status">
+          <select data-id="${o.orderId}" class="${o.status === 'new' ? 'status-new' : ''}">
+            ${["new","called","confirmed","delivered","cancelled"].map(s =>
+              `<option value="${s}" ${s===o.status?"selected":""}>${s}</option>`
+            ).join("")}
+          </select>
+        </td>
+      </tr>
+    `).join("");
+
+    body.querySelectorAll("select").forEach(sel => {
+      sel.addEventListener("change", async () => {
+        await fetch(`/api/orders/${sel.dataset.id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json", "x-admin-key": adminKey },
+          body: JSON.stringify({ status: sel.value })
+        });
+        sel.className = sel.value === "new" ? "status-new" : "";
+      });
+    });
+  }
+
+  /* ---------- Products ---------- */
+  async function loadProducts(){
+    const res = await fetch("/api/products");
+    const data = await res.json();
+    renderProducts(data.products || []);
+  }
+
+  function renderProducts(products){
+    document.getElementById("productCountSub").textContent = `${products.length} saree${products.length!==1?"s":""} in the collection`;
+    const body = document.getElementById("productsBody");
+
+    if(products.length === 0){
+      body.innerHTML = `<tr><td colspan="6" class="empty">No sarees added yet.</td></tr>`;
+      return;
+    }
+
+    body.innerHTML = products.map(p => {
+      const stockClass = p.stock <= 0 ? "stock-out" : (p.stock <= 2 ? "stock-low" : "");
+      const stockLabel = p.stock <= 0 ? "Out of stock" : p.stock;
+      return `
+      <tr>
+        <td data-label="Photo">
+          ${p.image
+            ? `<img class="product-thumb" src="${p.image}" alt="${p.name}">`
+            : `<div class="product-thumb placeholder">No photo</div>`}
+        </td>
+        <td data-label="Saree">${p.name}</td>
+        <td data-label="Category">${p.cat}</td>
+        <td data-label="Price" class="amt">${fmt(p.price)}${p.was ? ` <span style="text-decoration:line-through; color:#a89282; font-size:0.78rem;">${fmt(p.was)}</span>` : ""}</td>
+        <td data-label="Stock" class="${stockClass}">${stockLabel}</td>
+        <td data-label="Actions" class="row-actions">
+          <button class="edit-btn" data-edit="${p.id}">Edit</button>
+          <button class="delete-btn" data-delete="${p.id}">Delete</button>
+        </td>
+      </tr>
+    `;
+    }).join("");
+
+    body.querySelectorAll("[data-edit]").forEach(btn => {
+      btn.addEventListener("click", () => startEdit(products.find(p => p.id === Number(btn.dataset.edit))));
+    });
+    body.querySelectorAll("[data-delete]").forEach(btn => {
+      btn.addEventListener("click", () => deleteProduct(Number(btn.dataset.delete)));
+    });
+  }
+
+  function startEdit(p){
+    editingId = p.id;
+    document.getElementById("formTitle").textContent = `Editing: ${p.name}`;
+    document.getElementById("p-name").value = p.name;
+    document.getElementById("p-cat").value = p.cat;
+    document.getElementById("p-price").value = p.price;
+    document.getElementById("p-was").value = p.was || "";
+    document.getElementById("p-stock").value = p.stock;
+    document.getElementById("p-image").value = p.image || "";
+    document.getElementById("saveBtn").textContent = "Save changes";
+    document.getElementById("cancelEditBtn").style.display = "inline-block";
+    window.scrollTo({ top: document.getElementById("productForm").offsetTop - 20, behavior: "smooth" });
+  }
+
+  function resetForm(){
+    editingId = null;
+    document.getElementById("productForm").reset();
+    document.getElementById("formTitle").textContent = "Add a saree";
+    document.getElementById("saveBtn").textContent = "Add saree";
+    document.getElementById("cancelEditBtn").style.display = "none";
+    document.getElementById("productFormMsg").textContent = "";
+  }
+  document.getElementById("cancelEditBtn").addEventListener("click", resetForm);
+
+  document.getElementById("productForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const msgEl = document.getElementById("productFormMsg");
+    msgEl.textContent = "";
+
+    const payload = {
+      name: document.getElementById("p-name").value.trim(),
+      cat: document.getElementById("p-cat").value.trim(),
+      price: Number(document.getElementById("p-price").value),
+      was: document.getElementById("p-was").value ? Number(document.getElementById("p-was").value) : null,
+      stock: Number(document.getElementById("p-stock").value),
+      image: document.getElementById("p-image").value.trim()
+    };
+
+    const url = editingId ? `/api/products/${editingId}` : "/api/products";
+    const method = editingId ? "PUT" : "POST";
+
+    try{
+      const res = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json", "x-admin-key": adminKey },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if(!res.ok || !data.success) throw new Error(data.message || "Could not save");
+
+      resetForm();
+      loadProducts();
+    }catch(err){
+      msgEl.textContent = err.message;
+    }
+  });
+
+  async function deleteProduct(id){
+    if(!confirm("Remove this saree from the collection?")) return;
+    await fetch(`/api/products/${id}`, {
+      method: "DELETE",
+      headers: { "x-admin-key": adminKey }
+    });
+    loadProducts();
+  }
+
+  /* ---------- Site settings ---------- */
+  async function loadSettings(){
+    const res = await fetch("/api/settings");
+    const data = await res.json();
+    const s = data.settings || {};
+    document.getElementById("s-brandName").value = s.brandName || "";
+    document.getElementById("s-tagline").value = s.tagline || "";
+    document.getElementById("s-heroEyebrow").value = s.heroEyebrow || "";
+    document.getElementById("s-heroText").value = s.heroText || "";
+    document.getElementById("s-footerStory").value = s.footerStory || "";
+    document.getElementById("s-ownerName").value = s.ownerName || "";
+    document.getElementById("s-phone").value = s.phone || "";
+    document.getElementById("s-address").value = s.address || "";
+    document.getElementById("s-copyright").value = s.copyright || "";
+    document.getElementById("s-footerTagline").value = s.footerTagline || "";
+
+    currentSteps = Array.isArray(s.weaveSteps) ? s.weaveSteps.map(x => ({...x})) : [];
+    currentTestimonials = Array.isArray(s.testimonials) ? s.testimonials.map(x => ({...x})) : [];
+    renderStepsEditor();
+    renderTestimonialsEditor();
+  }
+
+  /* ---------- Weave steps list editor ---------- */
+  let currentSteps = [];
+  function renderStepsEditor(){
+    const el = document.getElementById("stepsListEditor");
+    el.innerHTML = currentSteps.map((step, i) => `
+      <div class="list-row">
+        <input type="text" placeholder="Step title (e.g. Dyeing)" value="${(step.title || "").replace(/"/g,"&quot;")}" data-step-title="${i}">
+        <textarea rows="2" placeholder="Step description" data-step-text="${i}">${step.text || ""}</textarea>
+        <button type="button" class="remove-row" data-remove-step="${i}">Remove</button>
+      </div>
+    `).join("") || `<p class="sub">No steps yet — tap "+ Add step" below.</p>`;
+
+    el.querySelectorAll("[data-step-title]").forEach(inp => {
+      inp.addEventListener("input", () => currentSteps[+inp.dataset.stepTitle].title = inp.value);
+    });
+    el.querySelectorAll("[data-step-text]").forEach(ta => {
+      ta.addEventListener("input", () => currentSteps[+ta.dataset.stepText].text = ta.value);
+    });
+    el.querySelectorAll("[data-remove-step]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        currentSteps.splice(+btn.dataset.removeStep, 1);
+        renderStepsEditor();
+      });
+    });
+  }
+  document.getElementById("addStepBtn").addEventListener("click", () => {
+    currentSteps.push({ title: "", text: "" });
+    renderStepsEditor();
+  });
+  document.getElementById("saveStepsBtn").addEventListener("click", async () => {
+    const msgEl = document.getElementById("stepsMsg");
+    msgEl.style.color = "#8a6b5a";
+    msgEl.textContent = "Saving...";
+    try{
+      const res = await fetch("/api/settings", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", "x-admin-key": adminKey },
+        body: JSON.stringify({ weaveSteps: currentSteps })
+      });
+      const data = await res.json();
+      if(!res.ok || !data.success) throw new Error(data.message || "Could not save");
+      msgEl.style.color = "#2f7d4f";
+      msgEl.textContent = "Saved — refresh your storefront to see the changes.";
+    }catch(err){
+      msgEl.style.color = "#a3283a";
+      msgEl.textContent = err.message;
+    }
+  });
+
+  /* ---------- Testimonials list editor ---------- */
+  let currentTestimonials = [];
+  function renderTestimonialsEditor(){
+    const el = document.getElementById("testimonialsListEditor");
+    el.innerHTML = currentTestimonials.map((t, i) => `
+      <div class="list-row">
+        <textarea rows="2" placeholder="Quote" data-t-text="${i}">${t.text || ""}</textarea>
+        <input type="text" placeholder="Name, City" value="${(t.who || "").replace(/"/g,"&quot;")}" data-t-who="${i}">
+        <button type="button" class="remove-row" data-remove-t="${i}">Remove</button>
+      </div>
+    `).join("") || `<p class="sub">No stories yet — tap "+ Add story" below.</p>`;
+
+    el.querySelectorAll("[data-t-text]").forEach(ta => {
+      ta.addEventListener("input", () => currentTestimonials[+ta.dataset.tText].text = ta.value);
+    });
+    el.querySelectorAll("[data-t-who]").forEach(inp => {
+      inp.addEventListener("input", () => currentTestimonials[+inp.dataset.tWho].who = inp.value);
+    });
+    el.querySelectorAll("[data-remove-t]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        currentTestimonials.splice(+btn.dataset.removeT, 1);
+        renderTestimonialsEditor();
+      });
+    });
+  }
+  document.getElementById("addTestimonialBtn").addEventListener("click", () => {
+    currentTestimonials.push({ text: "", who: "" });
+    renderTestimonialsEditor();
+  });
+  document.getElementById("saveTestimonialsBtn").addEventListener("click", async () => {
+    const msgEl = document.getElementById("testimonialsMsg");
+    msgEl.style.color = "#8a6b5a";
+    msgEl.textContent = "Saving...";
+    try{
+      const res = await fetch("/api/settings", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", "x-admin-key": adminKey },
+        body: JSON.stringify({ testimonials: currentTestimonials })
+      });
+      const data = await res.json();
+      if(!res.ok || !data.success) throw new Error(data.message || "Could not save");
+      msgEl.style.color = "#2f7d4f";
+      msgEl.textContent = "Saved — refresh your storefront to see the changes.";
+    }catch(err){
+      msgEl.style.color = "#a3283a";
+      msgEl.textContent = err.message;
+    }
+  });
+  document.getElementById("settingsForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const msgEl = document.getElementById("settingsFormMsg");
+    msgEl.style.color = "#8a6b5a";
+    msgEl.textContent = "Saving...";
+
+    const payload = {
+      brandName: document.getElementById("s-brandName").value,
+      tagline: document.getElementById("s-tagline").value,
+      heroEyebrow: document.getElementById("s-heroEyebrow").value,
+      heroText: document.getElementById("s-heroText").value,
+      footerStory: document.getElementById("s-footerStory").value,
+      ownerName: document.getElementById("s-ownerName").value,
+      phone: document.getElementById("s-phone").value,
+      address: document.getElementById("s-address").value,
+      copyright: document.getElementById("s-copyright").value,
+      footerTagline: document.getElementById("s-footerTagline").value
+    };
+
+    try{
+      const res = await fetch("/api/settings", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", "x-admin-key": adminKey },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if(!res.ok || !data.success) throw new Error(data.message || "Could not save");
+      msgEl.style.color = "#2f7d4f";
+      msgEl.textContent = "Saved — refresh your storefront to see the changes.";
+    }catch(err){
+      msgEl.style.color = "#a3283a";
+      msgEl.textContent = err.message;
+    }
+  });
+</script>
+</body>
+</html>
